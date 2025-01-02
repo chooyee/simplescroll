@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scroll Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    .scrollable {
+      overflow: auto;
+      border: 1px solid #ccc;
+      margin-bottom: 20px;
+      padding: 10px;
+    }
+
+    .content {
+      width: 600px;
+      height: 300px;
+      background: linear-gradient(to bottom right, #ff7eb3, #8ec5fc);
+    }
+
+    .scrolled {
+      background-color: lightgreen !important; /* CSS change for scrolled elements */
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+
+    .extra-content {
+      height: 500px; /* Extend the page height */
+      background: linear-gradient(to bottom, #ffffff, #d7e1ec);
+    }
+    .hide {
+      display: none;
+    }
+
+  </style>
+</head>
+<body>
+  <h1>Test Scroll Trigger When Div Reaches Target Height</h1>
+<!-- Extra content to make the page scrollable -->
+<div class="extra-content"></div>
+  <div class="scrollable" id="div1">
+    <h1>Item 1</h1>
+
+    <div class="hide" data-item="mainbox">Scrollable Div 1</div>
+  </div>
+
+  <div class="scrollable" id="div2">
+    <h1>Item 2</h1>
+    <div class="hide" data-item="mainbox">Scrollable Div 2</div>
+  </div>
+  <div class="scrollable" id="div2">
+    <h1>Item 3</h1>
+    <div class="hide" data-item="mainbox">Scrollable Div 2</div>
+  </div>
+  <div class="scrollable" id="div2">
+    <h1>Item 4</h1>
+    <div class="hide" data-item="mainbox">Scrollable Div 2</div>
+  </div>
+
+
+  <!-- Extra content to make the page scrollable -->
+  <div class="extra-content"></div>
+
+  <script>
+   class ScrollableElement {
+        constructor(className, targetHeight) {
+            this.className = className;
+            this.targetHeight = targetHeight;
+            this.elements = document.querySelectorAll(className);
+
+            // Attach scroll event listener to the window within the constructor
+            window.addEventListener("scroll", this.handleScroll.bind(this)); // Ensure proper 'this' context
+        }
+
+        handleScroll() {
+            this.elements.forEach((element) => {
+                const rect = element.getBoundingClientRect();
+                const child = element.querySelector('[data-item="mainbox"]');//get the children div
+                if (rect.top <= this.targetHeight && rect.bottom > this.targetHeight) {
+                    element.classList.add("scrolled"); 
+                    this.addClass(child, 'content')
+                } else {
+                    //child.classList.add('hide'); 
+                    element.classList.remove("scrolled");
+                    if (rect.bottom> this.targetHeight) child.classList.add('hide'); 
+                }
+            });
+        }
+
+        addClass(element, className) {
+            element.classList.remove('hide'); 
+            if (!element.classList.contains(className)) {
+                element.classList.add(className);
+            }
+        }
+    }
+ 
+    const scrollable1 = new ScrollableElement(".scrollable", 100);
+  </script>
+</body>
+</html>
